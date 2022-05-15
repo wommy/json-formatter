@@ -124,16 +124,11 @@
     function firstJSONCharIndex(s) {
       var arrayIdx = s.indexOf('['),
           objIdx = s.indexOf('{'),
-          idx = 0
+          idx
       ;
-      if (arrayIdx !== -1)
-        idx = arrayIdx ;
-      if (objIdx !== -1) {
-        if (arrayIdx === -1)
-          idx = objIdx ;
-        else
-          idx = Math.min(objIdx, arrayIdx) ;
-      }
+      arrayIdx > -1 && objIdx > -1 // if both exist
+        ? idx = Math.min(arrayIdx, objIdx) // find the lower, else
+        : idx = Math.max(arrayIdx, objIdx, 0); // the higher including 0
       return idx ;
     }
 

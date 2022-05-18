@@ -90,31 +90,16 @@
     return idx
   }
 
-  var templates,
-    baseSpan = document.createElement('span')
-  function getSpanBoth(innerText, className) {
-    var span = baseSpan.cloneNode()
-    span.className = className
-    span.innerText = innerText
-    return span
-  }
-  function getSpanText(innerText) {
-    var span = baseSpan.cloneNode()
-    span.innerText = innerText
-    return span
-  }
-  function getSpanClass(className) {
-    var span = baseSpan.cloneNode()
-    span.className = className
-    return span
-  }
+  const getSpanBoth = (className, innerText) => document.createElement('span')
+    .className = className
+    .innerText = innerText
 
   var templatesObj = {
-    t_kvov: getSpanClass('kvov'),
-    t_exp: getSpanClass('e'),
-    t_key: getSpanClass('k'),
-    t_string: getSpanClass('s'),
-    t_number: getSpanClass('n'),
+    t_kvov: getSpanBoth('kvov'),
+    t_exp: getSpanBoth('e'),
+    t_key: getSpanBoth('k'),
+    t_string: getSpanBoth('s'),
+    t_number: getSpanBoth('n'),
     t_null: getSpanBoth('null', 'nl'),
     t_true: getSpanBoth('true', 'bl'),
     t_false: getSpanBoth('false', 'bl'),
@@ -122,8 +107,8 @@
     t_cBrace: getSpanBoth('}', 'b'),
     t_oBracket: getSpanBoth('[', 'b'),
     t_cBracket: getSpanBoth(']', 'b'),
-    t_ellipsis: getSpanClass('ell'),
-    t_blockInner: getSpanClass('blockInner'),
+    t_ellipsis: getSpanBoth('ell'),
+    t_blockInner: getSpanBoth('blockInner'),
     t_colonAndSpace: document.createTextNode(':\u00A0'),
     t_commaText: document.createTextNode(','),
     t_dblqText: document.createTextNode('"'),
@@ -170,7 +155,7 @@
     var blockInner, childKvov
     switch (type) {
       case TYPE_STRING:
-        var innerStringEl = baseSpan.cloneNode(),
+        var innerStringEl = document.createElement('span')
           escapedString = JSON.stringify(value)
         escapedString = escapedString.substring(1, escapedString.length - 1)
         if (value[0] === 'h' && value.substring(0, 4) === 'http') {

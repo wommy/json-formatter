@@ -7,11 +7,8 @@
       case 'NOT JSON':
         pre.hidden = false
         document.body.removeChild(jfContent)
-        exitedNotJsonTime = +new Date()
         break
       case 'FORMATTING':
-        isJsonTime = +new Date()
-        clearTimeout(slowAnalysisTimeout)
         try {
           let meta = document.querySelector('meta[name="color-scheme"]')
           if (!meta) {
@@ -80,7 +77,6 @@
         break
       case 'FORMATTED':
         jfContent.innerHTML = msg[1]
-        displayedFormattedJsonTime = Date.now()
         setTimeout(function () {
           var script = document.createElement('script')
           script.innerHTML = 'window.json = ' + msg[2] + ';'
@@ -93,7 +89,6 @@
     }
   })
   function ready() {
-    domReadyTime = Date.now()
     var bodyChildren = document.body.childNodes
     pre = bodyChildren[0]
     var jsonLength = ((pre && pre.innerText) || '').length

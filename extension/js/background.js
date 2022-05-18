@@ -248,12 +248,15 @@
     divFormattedJson.appendChild(rootKvov)
     var returnHTML = divFormattedJson.outerHTML
     if (jsonpFunctionName !== null) {
-      returnHTML =
-        '<div id="jsonpOpener">' +
-        jsonpFunctionName +
-        ' ( </div>' +
-        returnHTML +
-        '<div id="jsonpCloser">)</div>'
+      returnHTML = `
+        <div id="jsonpOpener">
+          ${jsonpFunctionName} ( 
+            </div>
+            ${returnHTML}
+            <div id="jsonpCloser">
+          )
+        </div>
+      `
     }
     return returnHTML
   }

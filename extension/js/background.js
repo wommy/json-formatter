@@ -89,7 +89,6 @@
     }
     return idx
   }
-  localStorage.jfVersion = '0.5.6'
   var templates,
     baseSpan = document.createElement('span')
   function getSpanBoth(innerText, className) {

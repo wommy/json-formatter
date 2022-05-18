@@ -121,36 +121,6 @@
     })
   }
   document.addEventListener('DOMContentLoaded', ready, false)
-  var lastKvovIdGiven = 0
-  function collapse(elements) {
-    var el, i, blockInner, count
-    for (i = elements.length - 1; i >= 0; i--) {
-      el = elements[i]
-      el.classList.add('collapsed')
-      if (!el.id) {
-        el.id = 'kvov' + ++lastKvovIdGiven
-        blockInner = el.firstElementChild
-        while (blockInner && !blockInner.classList.contains('blockInner')) {
-          blockInner = blockInner.nextElementSibling
-        }
-        if (!blockInner) continue
-        count = blockInner.children.length
-        var comment = count + (count === 1 ? ' item' : ' items')
-        jfStyleEl.insertAdjacentHTML(
-          'beforeend',
-          '\n#kvov' +
-            lastKvovIdGiven +
-            '.collapsed:after{color: #aaa; content:" // ' +
-            comment +
-            '"}',
-        )
-      }
-    }
-  }
-  function expand(elements) {
-    for (var i = elements.length - 1; i >= 0; i--)
-      elements[i].classList.remove('collapsed')
-  }
 
   let modKey
   if (navigator.platform.indexOf('Mac') !== -1) modKey = ev => ev.metaKey

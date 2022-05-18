@@ -113,16 +113,18 @@
       })
     }
     document.addEventListener('keyup', function (e) {
-      (e.key === 'ArrowLeft' && typeof buttonPlain !== 'undefined') && buttonPlain.click()
-      (e.key === 'ArrowRight' && typeof buttonFormatted !== 'undefined') && buttonFormatted.click()
+      e.key === 'ArrowLeft' && typeof buttonPlain !== 'undefined' &&
+        buttonPlain.click()
+      e.key === 'ArrowRight' && typeof buttonFormatted !== 'undefined' &&
+        buttonFormatted.click()
     })
   }
   document.addEventListener('DOMContentLoaded', ready, false)
 
   let modKey
-  (navigator.platform.indexOf('Mac') !== -1)
-    ? modKey = ev => ev.metaKey
-    : modKey = ev => ev.ctrlKey 
+  navigator.platform.indexOf('Mac') !== -1
+    ? (modKey = ev => ev.metaKey)
+    : (modKey = ev => ev.ctrlKey)
 
   function generalClick(ev) {
     if (ev.which === 1) {

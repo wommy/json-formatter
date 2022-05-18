@@ -127,34 +127,38 @@
     : (modKey = ev => ev.ctrlKey)
 
   function generalClick(ev) {
-    if (ev.which === 1) {
-      var elem = ev.target
-      if (elem.className === 'e') {
-        ev.preventDefault()
-        var parent = elem.parentNode,
-          div = jfContent,
-          prevBodyHeight = document.body.offsetHeight,
-          scrollTop = document.body.scrollTop,
-          parentSiblings
-        if (parent.classList.contains('collapsed')) {
-          if (modKey(ev)) expand(parent.parentNode.children)
-          else expand([parent])
-        } else {
-          if (modKey(ev)) collapse(parent.parentNode.children)
-          else collapse([parent])
-        }
-        div.style.marginBottom = 0
-        if (document.body.offsetHeight < window.innerHeight) {
-          return
-        }
-        if (document.body.scrollTop === scrollTop) {
-          return
-        }
-        var difference = scrollTop - document.body.scrollTop + 8
-        div.style.marginBottom = difference + 'px'
-        document.body.scrollTop = scrollTop
-        return
-      }
+    if (ev.which !== 1) return 
+
+    const elem = ev.target
+    if (elem.className !== 'e') return
+
+    ev.preventDefault()
+
+    let parent = elem.parentNode,
+      div = jfContent,
+      prevBodyHeight = document.body.offsetHeight,
+      scrollTop = document.body.scrollTop,
+      parentSiblings
+
+    if (parent.classList.contains('collapsed')) {
+      if (modKey(ev))
+        expand(parent.parentNode.children)
+      else 
+        expand([parent])
+    } else {
+      if (modKey(ev))
+        collapse(parent.parentNode.children)
+      else 
+        collapse([parent])
     }
+
+    div.style.marginBottom = 0
+    if (document.body.offsetHeight < window.innerHeight) return
+    if (document.body.scrollTop === scrollTop) return
+
+    var difference = scrollTop - document.body.scrollTop + 8
+    div.style.marginBottom = difference + 'px'
+    document.body.scrollTop = scrollTop
+    return
   }
 })()

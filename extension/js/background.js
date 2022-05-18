@@ -242,23 +242,19 @@
   }
   function jsonObjToHTML(obj, jsonpFunctionName) {
     var rootKvov = getKvovDOM(obj, false)
-    rootKvov.classList.add('rootKvov')
+      .classList.add('rootKvov')
     var divFormattedJson = document.createElement('DIV')
-    divFormattedJson.id = 'formattedJson'
-    divFormattedJson.appendChild(rootKvov)
-    var returnHTML = divFormattedJson.outerHTML
-    if (jsonpFunctionName !== null) {
-      returnHTML = `
-        <div id="jsonpOpener">
-          ${jsonpFunctionName} ( 
-            </div>
-            ${returnHTML}
-            <div id="jsonpCloser">
-          )
-        </div>
-      `
-    }
-    return returnHTML
+      .id = 'formattedJson'
+      .appendChild(rootKvov)
+    if (jsonpFunctionName !== null) return `
+      <div id="jsonpOpener">
+        ${jsonpFunctionName} ( 
+          </div>
+          ${divFormattedJson.outerHTML}
+          <div id="jsonpCloser">
+        )
+      </div>
+    `
   }
   chrome.extension.onConnect.addListener(function (port) {
     if (port.name !== 'jf') {

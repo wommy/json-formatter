@@ -89,24 +89,26 @@
     }
     return idx
   }
+
   var templates,
     baseSpan = document.createElement('span')
   function getSpanBoth(innerText, className) {
-    var span = baseSpan.cloneNode(false)
+    var span = baseSpan.cloneNode()
     span.className = className
     span.innerText = innerText
     return span
   }
   function getSpanText(innerText) {
-    var span = baseSpan.cloneNode(false)
+    var span = baseSpan.cloneNode()
     span.innerText = innerText
     return span
   }
   function getSpanClass(className) {
-    var span = baseSpan.cloneNode(false)
+    var span = baseSpan.cloneNode()
     span.className = className
     return span
   }
+
   var templatesObj = {
     t_kvov: getSpanClass('kvov'),
     t_exp: getSpanClass('e'),
@@ -126,6 +128,7 @@
     t_commaText: document.createTextNode(','),
     t_dblqText: document.createTextNode('"'),
   }
+
   function getKvovDOM(value, keyName) {
     var type,
       kvov,
@@ -150,16 +153,16 @@
           break
         }
       }
-      if (nonZeroSize) kvov.appendChild(templates.t_exp.cloneNode(false))
+      if (nonZeroSize) kvov.appendChild(templates.t_exp.cloneNode())
     }
     if (keyName !== false) {
       kvov.classList.add('objProp')
-      keySpan = templates.t_key.cloneNode(false)
+      keySpan = templates.t_key.cloneNode()
       keySpan.textContent = JSON.stringify(keyName).slice(1, -1)
-      kvov.appendChild(templates.t_dblqText.cloneNode(false))
+      kvov.appendChild(templates.t_dblqText.cloneNode())
       kvov.appendChild(keySpan)
-      kvov.appendChild(templates.t_dblqText.cloneNode(false))
-      kvov.appendChild(templates.t_colonAndSpace.cloneNode(false))
+      kvov.appendChild(templates.t_dblqText.cloneNode())
+      kvov.appendChild(templates.t_colonAndSpace.cloneNode())
     } else {
       kvov.classList.add('arrElem')
     }
@@ -167,7 +170,7 @@
     var blockInner, childKvov
     switch (type) {
       case TYPE_STRING:
-        var innerStringEl = baseSpan.cloneNode(false),
+        var innerStringEl = baseSpan.cloneNode(),
           escapedString = JSON.stringify(value)
         escapedString = escapedString.substring(1, escapedString.length - 1)
         if (value[0] === 'h' && value.substring(0, 4) === 'http') {
@@ -178,22 +181,22 @@
         } else {
           innerStringEl.innerText = escapedString
         }
-        valueElement = templates.t_string.cloneNode(false)
-        valueElement.appendChild(templates.t_dblqText.cloneNode(false))
+        valueElement = templates.t_string.cloneNode()
+        valueElement.appendChild(templates.t_dblqText.cloneNode())
         valueElement.appendChild(innerStringEl)
-        valueElement.appendChild(templates.t_dblqText.cloneNode(false))
+        valueElement.appendChild(templates.t_dblqText.cloneNode())
         kvov.appendChild(valueElement)
         break
       case TYPE_NUMBER:
-        valueElement = templates.t_number.cloneNode(false)
+        valueElement = templates.t_number.cloneNode()
         valueElement.innerText = value
         kvov.appendChild(valueElement)
         break
       case TYPE_OBJECT:
         kvov.appendChild(templates.t_oBrace.cloneNode(true))
         if (nonZeroSize) {
-          kvov.appendChild(templates.t_ellipsis.cloneNode(false))
-          blockInner = templates.t_blockInner.cloneNode(false)
+          kvov.appendChild(templates.t_ellipsis.cloneNode())
+          blockInner = templates.t_blockInner.cloneNode()
           var count = 0,
             k,
             comma
@@ -214,14 +217,14 @@
       case TYPE_ARRAY:
         kvov.appendChild(templates.t_oBracket.cloneNode(true))
         if (nonZeroSize) {
-          kvov.appendChild(templates.t_ellipsis.cloneNode(false))
-          blockInner = templates.t_blockInner.cloneNode(false)
+          kvov.appendChild(templates.t_ellipsis.cloneNode())
+          blockInner = templates.t_blockInner.cloneNode()
           for (
             var i = 0, length = value.length, lastIndex = length - 1;
             i < length;
             i++
           ) {
-            childKvov = getKvovDOM(value[i], false)
+            childKvov = getKvovDOM(value[i], )
             if (i < lastIndex)
               childKvov.appendChild(templates.t_commaText.cloneNode())
             blockInner.appendChild(childKvov)

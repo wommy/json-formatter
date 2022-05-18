@@ -140,7 +140,8 @@
     else if (value === null) type = TYPE_NULL
     else if (value instanceof Array) type = TYPE_ARRAY
     else type = TYPE_OBJECT
-    kvov = templates.t_kvov.cloneNode(false)
+
+    kvov = templates.t_kvov.cloneNode()
     if (type === TYPE_OBJECT || type === TYPE_ARRAY) {
       nonZeroSize = false
       for (objKey in value) {
@@ -162,6 +163,7 @@
     } else {
       kvov.classList.add('arrElem')
     }
+
     var blockInner, childKvov
     switch (type) {
       case TYPE_STRING:

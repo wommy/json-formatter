@@ -327,8 +327,11 @@
           return
         }
         port.postMessage(['FORMATTING'])
-        var html = jsonObjToHTML(obj, jsonpFunctionName)
-        port.postMessage(['FORMATTED', html, validJsonText])
+        port.postMessage([
+          'FORMATTED', 
+          jsonObjToHTML(obj, jsonpFunctionName), 
+          validJsonText
+        ])
         port.disconnect()
       }
     })

@@ -127,7 +127,7 @@
     : (modKey = ev => ev.ctrlKey)
 
   function generalClick(ev) {
-    if (ev.which !== 1) return 
+    if (ev.which !== 1) return
 
     const elem = ev.target
     if (elem.className !== 'e') return
@@ -140,17 +140,13 @@
       scrollTop = document.body.scrollTop,
       parentSiblings
 
-    if (parent.classList.contains('collapsed')) {
-      if (modKey(ev))
-        expand(parent.parentNode.children)
-      else 
-        expand([parent])
-    } else {
-      if (modKey(ev))
-        collapse(parent.parentNode.children)
-      else 
-        collapse([parent])
-    }
+    parent.classList.contains('collapsed')
+      ? modKey(ev)
+        ? expand(parent.parentNode.children)
+        : expand([parent])
+      : modKey(ev)
+        ? collapse(parent.parentNode.children)
+        : collapse([parent])
 
     div.style.marginBottom = 0
     if (document.body.offsetHeight < window.innerHeight) return

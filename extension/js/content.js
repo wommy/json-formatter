@@ -156,16 +156,11 @@
     for (var i = elements.length - 1; i >= 0; i--)
       elements[i].classList.remove('collapsed')
   }
-  var mac = navigator.platform.indexOf('Mac') !== -1,
-    modKey
-  if (mac)
-    modKey = function (ev) {
-      return ev.metaKey
-    }
-  else
-    modKey = function (ev) {
-      return ev.ctrlKey
-    }
+
+  let modKey
+  if (navigator.platform.indexOf('Mac') !== -1) modKey = ev => ev.metaKey
+  else modKey = ev => ev.metaKey
+
   function generalClick(ev) {
     if (ev.which === 1) {
       var elem = ev.target

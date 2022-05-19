@@ -94,7 +94,7 @@
     .className = className
     .innerText = innerText
 
-  var templatesObj = {
+  var templates = {
     t_kvov: getSpanBoth('kvov'),
     t_exp: getSpanBoth('e'),
     t_key: getSpanBoth('k'),
@@ -115,13 +115,7 @@
   }
 
   function getKvovDOM(value, keyName) {
-    var type,
-      kvov,
-      nonZeroSize,
-      templates = templatesObj,
-      objKey,
-      keySpan,
-      valueElement
+    let type
     if (typeof value === 'string') type = TYPE_STRING
     else if (typeof value === 'number') type = TYPE_NUMBER
     else if (value === false || value === true) type = TYPE_BOOL
@@ -129,10 +123,10 @@
     else if (value instanceof Array) type = TYPE_ARRAY
     else type = TYPE_OBJECT
 
-    kvov = templates.t_kvov.cloneNode()
+    let kvov = templates.t_kvov.cloneNode()
     if (type === TYPE_OBJECT || type === TYPE_ARRAY) {
-      nonZeroSize = false
-      for (objKey in value) {
+      let nonZeroSize = false
+      for (let objKey in value) {
         if (value.hasOwnProperty(objKey)) {
           nonZeroSize = true
           break
@@ -142,7 +136,7 @@
     }
     if (keyName !== false) {
       kvov.classList.add('objProp')
-      keySpan = templates.t_key.cloneNode()
+      let keySpan = templates.t_key.cloneNode()
       keySpan.textContent = JSON.stringify(keyName).slice(1, -1)
       kvov.appendChild(templates.t_dblqText.cloneNode())
       kvov.appendChild(keySpan)
@@ -152,40 +146,41 @@
       kvov.classList.add('arrElem')
     }
 
-    var blockInner, childKvov
+    let blockInner, childKvov
     switch (type) {
       case TYPE_STRING:
         var innerStringEl = document.createElement('span')
           escapedString = JSON.stringify(value)
         escapedString = escapedString.substring(1, escapedString.length - 1)
         if (value[0] === 'h' && value.substring(0, 4) === 'http') {
-          var innerStringA = document.createElement('A')
-          innerStringA.href = value
-          innerStringA.innerText = escapedString
-          innerStringEl.appendChild(innerStringA)
+          var innerStringA = document.createElement('a')
+            .href = value
+            .innerText = escapedString
+            .appendChild(innerStringA)
         } else {
           innerStringEl.innerText = escapedString
         }
-        valueElement = templates.t_string.cloneNode()
-        valueElement.appendChild(templates.t_dblqText.cloneNode())
-        valueElement.appendChild(innerStringEl)
-        valueElement.appendChild(templates.t_dblqText.cloneNode())
-        kvov.appendChild(valueElement)
+        kvov.appendChild(
+          templates.t_string.cloneNode()
+            .appendChild(templates.t_dblqText.cloneNode())
+            .appendChild(innerStringEl)
+            .appendChild(templates.t_dblqText.cloneNode())
+        )
         break
       case TYPE_NUMBER:
-        valueElement = templates.t_number.cloneNode()
-        valueElement.innerText = value
-        kvov.appendChild(valueElement)
+        kvov.appendChild(
+          templates.t_number.cloneNode()
+            .innerText = value
+        )
         break
       case TYPE_OBJECT:
         kvov.appendChild(templates.t_oBrace.cloneNode(true))
         if (nonZeroSize) {
           kvov.appendChild(templates.t_ellipsis.cloneNode())
           blockInner = templates.t_blockInner.cloneNode()
-          var count = 0,
-            k,
-            comma
-          for (k in value) {
+
+          var count = 0, comma
+          for (let k in value) {
             if (value.hasOwnProperty(k)) {
               count++
               childKvov = getKvovDOM(value[k], k)
@@ -228,6 +223,7 @@
     }
     return kvov
   }
+
   function jsonObjToHTML(obj, jsonpFunctionName) {
     var rootKvov = getKvovDOM(obj, false)
       .classList.add('rootKvov')

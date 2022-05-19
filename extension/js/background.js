@@ -245,24 +245,26 @@
       console.log('JSON Formatter error - unknown port name ' + port.name, port)
       return
     }
-    port.onMessage.addListener(function (msg) {
+
+    port.onMessage.addListener(function ({ type, text }) {
       var jsonpFunctionName = null,
         validJsonText
-      if (msg.type === 'SENDING TEXT') {
-        var obj,
-          text = msg.text
+      if (type === 'SENDING TEXT') {
+        var obj
         var strippedText = text.substring(firstJSONCharIndex(text))
         try {
           obj = JSON.parse(strippedText)
           validJsonText = strippedText
         } catch (e) {
           text = text.trim()
-          var indexOfParen
-          if (!(indexOfParen = text.indexOf('('))) {
+
+          let indexOfParen = text.indexOf('(')
+          if ( !indexOfParen ) {
             port.postMessage(['NOT JSON', 'no opening parenthesis'])
             port.disconnect()
             return
           }
+
           var firstBit = removeComments(text.substring(0, indexOfParen)).trim()
           if (!firstBit.match(/^[a-zA-Z_$][\.\[\]'"0-9a-zA-Z_$]*$/)) {
             port.postMessage([
@@ -272,12 +274,14 @@
             port.disconnect()
             return
           }
-          var indexOfLastParen
-          if (!(indexOfLastParen = text.lastIndexOf(')'))) {
+
+          var indexOfLastParen = text.lastIndexOf(')')
+          if ( !indexOfLastParen ) {
             port.postMessage(['NOT JSON', 'no closing paren'])
             port.disconnect()
             return
           }
+
           var lastBit = removeComments(
             text.substring(indexOfLastParen + 1),
           ).trim()
@@ -289,6 +293,7 @@
             port.disconnect()
             return
           }
+
           text = text.substring(indexOfParen + 1, indexOfLastParen)
           try {
             obj = JSON.parse(text)
@@ -300,8 +305,10 @@
             ])
             return
           }
+
           jsonpFunctionName = firstBit
         }
+
         if (typeof obj !== 'object' && typeof obj !== 'array') {
           port.postMessage([
             'NOT JSON',
@@ -310,6 +317,7 @@
           port.disconnect()
           return
         }
+
         port.postMessage(['FORMATTING'])
         port.postMessage([
           'FORMATTED', 

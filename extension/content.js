@@ -90,67 +90,58 @@
     }
   })
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  var bodyChildren = document.body.childNodes
-  pre = bodyChildren[0]
-  var jsonLength = ((pre && pre.innerText) || '').length
+  document.addEventListener('DOMContentLoaded', ()=>{
+    var bodyChildren = document.body.childNodes
+    pre = bodyChildren[0]
+    var jsonLength = ((pre && pre.innerText) || '').length
 
-  ( bodyChildren.length !== 1 ) ?? port.disconnect()
-  ( pre.tagName !== 'PRE' ) ?? port.disconnect()
-  ( jsonLength > 3000000 ) ?? port.disconnect()
+    ( bodyChildren.length !== 1 ||
+      pre.tagName !== 'PRE' ||
+      jsonLength > 3000000 ) && port.disconnect()
 
-  pre.hidden = true
-  let slowAnalysisTimeout = setTimeout( ()=> pre.hidden = false, 1000 )
-  document.body.appendChild(
-    document.createElement('div').id = 'jfContent'
-  )
-  port.postMessage({
-    type: 'SENDING TEXT',
-    text: pre.innerText,
-    length: jsonLength,
-  })
+    pre.hidden = true
+    document.body.appendChild(
+      document.createElement('div').id = 'jfContent'
+    )
+    port.postMessage({
+      type: 'SENDING TEXT',
+      text: pre.innerText,
+      length: jsonLength,
+    })
 
-  document.addEventListener('keyup', function (e) {
-    e.key === 'ArrowLeft' && typeof buttonPlain !== 'undefined' &&
-      buttonPlain.click()
-    e.key === 'ArrowRight' && typeof buttonFormatted !== 'undefined' &&
-      buttonFormatted.click()
-  })
-}, false)
+    document.addEventListener('keyup', function (e) {
+      e.key === 'ArrowLeft' && typeof buttonPlain !== 'undefined' &&
+        buttonPlain.click()
+      e.key === 'ArrowRight' && typeof buttonFormatted !== 'undefined' &&
+        buttonFormatted.click()
+    })
+  }, false)
 
-  let modKey
-  navigator.platform.indexOf('Mac') !== -1
-    ? (modKey = ev => ev.metaKey)
-    : (modKey = ev => ev.ctrlKey)
+  function generalClick({which, target, preventDefault}) {
+    if (which !== 1) return
 
-  function generalClick(ev) {
-    if (ev.which !== 1) return
+    if (target.className !== 'e') return
 
-    const elem = ev.target
-    if (elem.className !== 'e') return
+    preventDefault()
 
-    ev.preventDefault()
+    let parent = target.parentNode,
+      scrollTop = document.body.scrollTop
 
-    let parent = elem.parentNode,
-      div = jfContent,
-      prevBodyHeight = document.body.offsetHeight,
-      scrollTop = document.body.scrollTop,
-      parentSiblings
+    let modKey = navigator.platform.indexOf('Mac') !== -1
+      ? ev.metaKey : ev.ctrlKey
+    const isMod = modKey ? parent.parentNode.children : [parent]
 
     parent.classList.contains('collapsed')
-      ? modKey(ev)
-        ? expand(parent.parentNode.children)
-        : expand([parent])
-      : modKey(ev)
-        ? collapse(parent.parentNode.children)
-        : collapse([parent])
+      ? expand( isMod )
+      : collapse( isMod )
 
-    div.style.marginBottom = 0
-    if (document.body.offsetHeight < window.innerHeight) return
-    if (document.body.scrollTop === scrollTop) return
+    jfContent.style.marginBottom = 0
+    if (document.body.offsetHeight < window.innerHeight || 
+    document.body.scrollTop === scrollTop
+    ) return
 
-    var difference = scrollTop - document.body.scrollTop + 8
-    div.style.marginBottom = difference + 'px'
+    div.style.marginBottom = `${scrollTop - document.body.scrollTop + 8}px`
+
     document.body.scrollTop = scrollTop
     return
   }

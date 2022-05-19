@@ -1,6 +1,7 @@
 ;(function () {
   'use strict'
-  var jfContent, pre, jfStyleEl, slowAnalysisTimeout
+  var jfContent, pre, jfStyleEl
+
   const port = chrome.extension.connect({ name: 'jf' })
   port.onMessage.addListener(function (msg) {
     switch (msg[0]) {
@@ -44,9 +45,8 @@
         buttonFormatted.innerText = 'Parsed'
         buttonFormatted.classList.add('selected')
         var plainOn = false
-        buttonPlain.addEventListener(
-          'click',
-          function () {
+        buttonPlain.addEventListener('click',
+          ()=>{
             if (!plainOn) {
               plainOn = true
               pre.hidden = false
@@ -77,49 +77,46 @@
         break
       case 'FORMATTED':
         jfContent.innerHTML = msg[1]
-        setTimeout(function () {
-          var script = document.createElement('script')
-          script.innerHTML = 'window.json = ' + msg[2] + ';'
-          document.head.appendChild(script)
+        setTimeout( ()=>{
+          document.head.appendChild(
+            document.createElement('script')
+              .innerHTML = `window.json = ${msg[2]};`
+          )
           console.log('JSON Formatter: Type "json" to inspect.')
         }, 100)
         break
       default:
-        throw new Error('Message not understood: ' + msg[0])
+        throw new Error(`Message not understood: ${msg[0]}`)
     }
   })
-  function ready() {
-    var bodyChildren = document.body.childNodes
-    pre = bodyChildren[0]
-    var jsonLength = ((pre && pre.innerText) || '').length
-    if (
-      bodyChildren.length !== 1 ||
-      pre.tagName !== 'PRE' ||
-      jsonLength > 3000000
-    ) {
-      port.disconnect()
-    } else {
-      pre.hidden = true
-      slowAnalysisTimeout = setTimeout(function () {
-        pre.hidden = false
-      }, 1000)
-      jfContent = document.createElement('div')
-      jfContent.id = 'jfContent'
-      document.body.appendChild(jfContent)
-      port.postMessage({
-        type: 'SENDING TEXT',
-        text: pre.innerText,
-        length: jsonLength,
-      })
-    }
-    document.addEventListener('keyup', function (e) {
-      e.key === 'ArrowLeft' && typeof buttonPlain !== 'undefined' &&
-        buttonPlain.click()
-      e.key === 'ArrowRight' && typeof buttonFormatted !== 'undefined' &&
-        buttonFormatted.click()
-    })
-  }
-  document.addEventListener('DOMContentLoaded', ready, false)
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  var bodyChildren = document.body.childNodes
+  pre = bodyChildren[0]
+  var jsonLength = ((pre && pre.innerText) || '').length
+
+  ( bodyChildren.length !== 1 ) ?? port.disconnect()
+  ( pre.tagName !== 'PRE' ) ?? port.disconnect()
+  ( jsonLength > 3000000 ) ?? port.disconnect()
+
+  pre.hidden = true
+  let slowAnalysisTimeout = setTimeout( ()=> pre.hidden = false, 1000 )
+  document.body.appendChild(
+    document.createElement('div').id = 'jfContent'
+  )
+  port.postMessage({
+    type: 'SENDING TEXT',
+    text: pre.innerText,
+    length: jsonLength,
+  })
+
+  document.addEventListener('keyup', function (e) {
+    e.key === 'ArrowLeft' && typeof buttonPlain !== 'undefined' &&
+      buttonPlain.click()
+    e.key === 'ArrowRight' && typeof buttonFormatted !== 'undefined' &&
+      buttonFormatted.click()
+  })
+}, false)
 
   let modKey
   navigator.platform.indexOf('Mac') !== -1

@@ -1,11 +1,5 @@
 ;(function () {
   'use strict'
-  var TYPE_STRING = 1,
-    TYPE_NUMBER = 2,
-    TYPE_OBJECT = 3,
-    TYPE_ARRAY = 4,
-    TYPE_BOOL = 5,
-    TYPE_NULL = 6
   function removeComments(str) {
     str = ('__' + str + '__').split('')
     var mode = {
@@ -115,6 +109,13 @@
   }
 
   function getKvovDOM(value, keyName) {
+    var TYPE_STRING = 1,
+      TYPE_NUMBER = 2,
+      TYPE_OBJECT = 3,
+      TYPE_ARRAY = 4,
+      TYPE_BOOL = 5,
+      TYPE_NULL = 6
+
     let type
     if (typeof value === 'string') type = TYPE_STRING
     else if (typeof value === 'number') type = TYPE_NUMBER
@@ -148,6 +149,7 @@
 
     let blockInner, childKvov
     switch (type) {
+
       case TYPE_STRING:
         var innerStringEl = document.createElement('span')
           escapedString = JSON.stringify(value)
@@ -156,7 +158,7 @@
           var innerStringA = document.createElement('a')
             .href = value
             .innerText = escapedString
-            .appendChild(innerStringA)
+            innerStringEl.appendChild(innerStringA)
         } else {
           innerStringEl.innerText = escapedString
         }
@@ -167,12 +169,14 @@
             .appendChild(templates.t_dblqText.cloneNode())
         )
         break
+
       case TYPE_NUMBER:
         kvov.appendChild(
           templates.t_number.cloneNode()
             .innerText = value
         )
         break
+
       case TYPE_OBJECT:
         kvov.appendChild(templates.t_oBrace.cloneNode(true))
         if (nonZeroSize) {
@@ -194,6 +198,7 @@
         }
         kvov.appendChild(templates.t_cBrace.cloneNode(true))
         break
+
       case TYPE_ARRAY:
         kvov.appendChild(templates.t_oBracket.cloneNode(true))
         if (nonZeroSize) {
@@ -213,10 +218,12 @@
         }
         kvov.appendChild(templates.t_cBracket.cloneNode(true))
         break
+
       case TYPE_BOOL:
         if (value) kvov.appendChild(templates.t_true.cloneNode(true))
         else kvov.appendChild(templates.t_false.cloneNode(true))
         break
+
       case TYPE_NULL:
         kvov.appendChild(templates.t_null.cloneNode(true))
         break
